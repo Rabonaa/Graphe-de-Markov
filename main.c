@@ -4,6 +4,7 @@
 
 
 int main() {
-    printf("Hello, World!\n");
+    t_liste_adj liste_adj = readGraph("exemple1.txt");
+    DisplayAdjList(liste_adj, liste_adj.taille);
     return 0;
 }
