@@ -113,3 +113,32 @@ void DisplayAdjList(t_liste_adj list_adj, int taille) {
         DisplayList(&list_adj.list[i]);
     }
 }
+
+//lecture graphe <???>
+t_liste_adj readGraph(const char *filename) {
+    FILE *file = fopen(filename, "rt");
+    int nbsommet, depart, arrivee;
+    float proba;
+    t_liste_adj liste_adj;
+    if (!file) {
+        perror("Erreur de lecture du fichier\n");
+        exit(EXIT_FAILURE);
+    }
+    if (fscanf(file, "%d", &nbsommet) != 1) {
+        perror("Nombre de sommet introuvable\n");
+        exit(EXIT_FAILURE);
+    }
+    liste_adj = EmptyAdjList(nbsommet);
+    while (fscanf(file, "%d %d %f", &depart, &arrivee, &proba) == 3) {
+        if (depart < 1 || depart > nbsommet) {
+            perror("Depart invalide\n");
+            continue;
+        }
+        else {
+            AddCell(&liste_adj.list[depart - 1], arrivee, proba);
+        }
+    }
+    fclose(file);
+    return liste_adj;
+}
+
