@@ -15,7 +15,7 @@ typedef struct liste {
 
 //liste d'adjacence (tableau dynamique de liste)
 typedef struct ListeAdj {
-    t_list* list;
+    t_list *list;
     int taille;
 }t_liste_adj;
 
