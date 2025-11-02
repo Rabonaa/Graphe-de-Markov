@@ -25,5 +25,5 @@ void AddCell( t_list *list, int sommet_arrivee, float proba);
 void DisplayList(t_list *list);
 t_liste_adj EmptyAdjList(int taille);
 void DisplayAdjList(t_liste_adj list_adj, int taille);
-
+t_liste_adj readGraph(const char *filename);
 #endif
