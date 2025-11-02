@@ -114,7 +114,7 @@ void DisplayAdjList(t_liste_adj list_adj, int taille) {
     }
 }
 
-//lecture graphe <???>
+//lecture graphe <????>
 t_liste_adj readGraph(const char *filename) {
     FILE *file = fopen(filename, "rt");
     int nbsommet, depart, arrivee;
