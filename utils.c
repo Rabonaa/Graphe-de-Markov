@@ -86,22 +86,6 @@ t_liste_adj EmptyAdjList(int taille) {
     return list_adj;
 }
 
-//affichage d'une liste d'adjacene(1)
-/*void DisplayAdjList(t_liste_adj list_adj, int taille) {
-    if (!list_adj.list) {
-        printf("Liste d'adjacence vide!\n");
-        return;
-    }
-
-    for (int i = 1; i <= taille; i++) {
-        printf("Liste pour le sommet %d: [head @] -> ",i);
-        for (int i = 1; i <= taille; i++) {
-            printf("(.., ..) @-> ", list_adj.list[i]);
-        }
-
-    }
-}*/
-
 //affichage d'une liste d'adjacene(2)
 void DisplayAdjList(t_liste_adj list_adj, int taille) {
     if (!list_adj.list) {
