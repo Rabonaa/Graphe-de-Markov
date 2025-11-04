@@ -86,7 +86,7 @@ t_liste_adj EmptyAdjList(int taille) {
     return list_adj;
 }
 
-//affichage d'une liste d'adjacene(2)
+//affichage d'une liste d'adjacene
 void DisplayAdjList(t_liste_adj list_adj, int taille) {
     if (!list_adj.list) {
         printf("Liste d'adjacence vide!\n");
@@ -131,14 +131,11 @@ void isMarkovGraph(t_liste_adj liste_adj) {
     if (!liste_adj.list) {
         return ;
     }
-    float proba;
-    float sum;
-    t_cell *curr;
     for (int i = 0; i < liste_adj.taille; i++) {
-        sum = 0;
-    curr = liste_adj.list[i].head;
+        float sum = 0;
+        t_cell *curr = liste_adj.list[i].head;
         while (curr) {
-            proba = curr->probabilite;
+            float proba = curr->probabilite;
             sum += proba;
             curr = curr->next;
         }
@@ -148,5 +145,5 @@ void isMarkovGraph(t_liste_adj liste_adj) {
             return;
         }
     }
-printf("Le graphe est un graphe de Markov.");
+    printf("Le graphe est un graphe de Markov.");
 }
