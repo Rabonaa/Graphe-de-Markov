@@ -3,7 +3,7 @@
 
 
 int main() {
-    t_liste_adj liste_adj = readGraph("exemple1.txt");
+    t_liste_adj liste_adj = readGraph("exemple3.txt");
     DisplayAdjList(liste_adj, liste_adj.taille);
     return 0;
 }
