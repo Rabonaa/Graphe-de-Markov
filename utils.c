@@ -126,3 +126,27 @@ t_liste_adj readGraph(const char *filename) {
     return liste_adj;
 }
 
+//Verification de graphe
+void isMarkovGraph(t_liste_adj liste_adj) {
+    if (!liste_adj.list) {
+        return ;
+    }
+    float proba;
+    float sum;
+    t_cell *curr;
+    for (int i = 0; i < liste_adj.taille; i++) {
+        sum = 0;
+    curr = liste_adj.list[i].head;
+        while (curr) {
+            proba = curr->probabilite;
+            sum += proba;
+            curr = curr->next;
+        }
+        if (sum < 0.99 || sum > 1) {
+            printf("Ce n'est pas un graphe de Markov.\n");
+            printf("La somme des probabilites du sommet %d est %.2f\n", i + 1, sum);
+            return;
+        }
+    }
+printf("Le graphe est un graphe de Markov.");
+}
