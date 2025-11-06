@@ -68,7 +68,7 @@ void DisplayList(t_list *list) {
         printf("@-> (%d, %.2f) ", temp->sommet_arrivee, temp->probabilite);
         temp = temp->next;
     }
-    printf("@-> NULL\n");
+    printf("\n");
 }
 
 //Création d'une liste d'adjacence vide
