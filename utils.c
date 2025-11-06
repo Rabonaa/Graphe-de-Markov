@@ -147,3 +147,32 @@ void isMarkovGraph(t_liste_adj liste_adj) {
     }
     printf("Le graphe est un graphe de Markov.");
 }
+
+//Graphe en txt
+void WriteGraph(const char *filename, t_liste_adj liste_adj) {
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        printf("Erreur d'ouverture du fichier.\n");
+        return;
+    }
+    fprintf(file,"---\nconfig:\n");
+    fprintf(file, "  layout: elk\n");
+    fprintf(file, "  theme: neo\n");
+    fprintf(file, "  look: neo\n---\n");
+    fprintf(file, "\nflowchart LR\n");
+    for (int i = 0; i < liste_adj.taille; i++) {
+        const char *id = getID(i + 1);
+        fprintf(file, "%s((%d))\n", id, i + 1);
+    }
+    fprintf(file, "\n");
+    for (int i = 0; i < liste_adj.taille; i++) {
+        t_cell *curr = liste_adj.list[i].head;
+        while (curr) {
+            const char *id = getID(i + 1);
+            const char *id_sommet_arrivee = getID(curr->sommet_arrivee);
+            fprintf(file, "%s -->|%.2f|%s\n", id, curr->probabilite, id_sommet_arrivee);
+            curr = curr->next;
+        }
+    }
+    fclose(file);
+}
