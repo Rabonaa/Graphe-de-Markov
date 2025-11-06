@@ -171,7 +171,7 @@ void WriteGraph(const char *filename, t_liste_adj liste_adj) {
             const char *id = getID(i + 1);
             fprintf(file, "%s", id);
             const char *id_sommet_arrivee = getID(curr->sommet_arrivee);
-            fprintf(file, "%s -->|%.2f|%s\n", id, curr->probabilite, id_sommet_arrivee);
+            fprintf(file, " -->|%.2f|%s\n", curr->probabilite, id_sommet_arrivee);
             curr = curr->next;
         }
     }
