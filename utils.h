@@ -8,6 +8,7 @@ typedef struct cellule{
     struct cellule *next;
 }t_cell;
 
+
 //liste qui stocke toutes les arêtes sortant d'un sommet
 typedef struct liste {
     t_cell *head;
@@ -19,13 +20,18 @@ typedef struct ListeAdj {
     int taille;
 }t_liste_adj;
 
+
+
 t_cell* CreateCell(int sommet_arrivee, float proba);
-t_list EmptyList();
 void AddCell( t_list *list, int sommet_arrivee, float proba);
+t_list EmptyList();
 void DisplayList(t_list *list);
 t_liste_adj EmptyAdjList(int taille);
 void DisplayAdjList(t_liste_adj list_adj, int taille);
+
 t_liste_adj readGraph(const char *filename);
-void isMarkovGraph(t_liste_adj liste_adj);
+
 void WriteGraph(const char *filename, t_liste_adj liste_adj);
+
+void isMarkovGraph(t_liste_adj liste_adj);
 #endif
