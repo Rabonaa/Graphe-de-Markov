@@ -1,32 +1,7 @@
+#include "partie1/cglm.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-
-#include "utils.h"
-
-static char *getID(int i)
-{
-    // translate from 1,2,3, .. ,500+ to A,B,C,..,Z,AA,AB,...
-    static char buffer[10];
-    char temp[10];
-    int index = 0;
-
-    i--; // Adjust to 0-based index
-    while (i >= 0)
-    {
-        temp[index++] = 'A' + (i % 26);
-        i = (i / 26) - 1;
-    }
-
-    // Reverse the string to get the correct order
-    for (int j = 0; j < index; j++)
-    {
-        buffer[j] = temp[index - j - 1];
-    }
-    buffer[index] = '\0';
-
-    return buffer;
-}
+#include "partie1/utils.h"
 
 //Création d'une cellule
 t_cell* CreateCell(int sommet_arrivee, float proba) {
@@ -47,6 +22,56 @@ void AddCell( t_list *list, int sommet_arrivee, float proba) {
     t_cell *new_cell = CreateCell(sommet_arrivee, proba);
     new_cell->next = list->head;
     list->head = new_cell;
+}
+
+//Création d'une liste vide
+t_list EmptyList() {
+    t_list list;
+    list.head = NULL;
+    return list;
+}
+
+//Afficher une liste
+void DisplayList(t_list *list) {
+    if (!list->head) {
+        printf("Liste vide.\n");
+        return;
+    }
+    t_cell *head = list->head;
+    t_cell *temp = head->next;
+    printf("[head @] -> (%d, %.2f) ", head->sommet_arrivee, head->probabilite);
+    while (temp) {
+        printf("@-> (%d, %.2f) ", temp->sommet_arrivee, temp->probabilite);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+//Création d'une liste d'adjacence vide
+t_liste_adj EmptyAdjList(int taille) {
+    t_liste_adj list_adj;
+    list_adj.list = malloc(taille * sizeof(t_list));
+    if (!list_adj.list) {
+        printf("Erreur d'allocation!\n");
+        exit(EXIT_FAILURE);
+    }
+    list_adj.taille = taille;
+    for (int i = 0; i < taille; i++) {
+        list_adj.list[i] = EmptyList();
+    }
+    return list_adj;
+}
+
+//affichage d'une liste d'adjacene
+void DisplayAdjList(t_liste_adj list_adj, int taille) {
+    if (!list_adj.list) {
+        printf("Liste d'adjacence vide!\n");
+        return;
+    }
+    for (int i = 0; i < taille; i++) {
+        printf("Liste pour le sommet %d: ",i + 1);
+        DisplayList(&list_adj.list[i]);
+    }
 }
 
 //lecture graphe
@@ -78,28 +103,6 @@ t_liste_adj readGraph(const char *filename) {
 }
 
 
-//Verification de graphe
-void isMarkovGraph(t_liste_adj liste_adj) {
-    if (!liste_adj.list) {
-        return ;
-    }
-    for (int i = 0; i < liste_adj.taille; i++) {
-        float sum = 0;
-        t_cell *curr = liste_adj.list[i].head;
-        while (curr) {
-            float proba = curr->probabilite;
-            sum += proba;
-            curr = curr->next;
-        }
-        if (sum < 0.99 || sum > 1) {
-            printf("Ce n'est pas un graphe de Markov.\n");
-            printf("La somme des probabilites du sommet %d est %.2f\n", i + 1, sum);
-            return;
-        }
-    }
-    printf("Le graphe est un graphe de Markov.");
-}
-
 //Graphe en txt
 void WriteGraph(const char *filename, t_liste_adj liste_adj) {
     FILE *file = fopen(filename, "w");
@@ -130,3 +133,24 @@ void WriteGraph(const char *filename, t_liste_adj liste_adj) {
     fclose(file);
 }
 
+//Verification de graphe
+void isMarkovGraph(t_liste_adj liste_adj) {
+    if (!liste_adj.list) {
+        return ;
+    }
+    for (int i = 0; i < liste_adj.taille; i++) {
+        float sum = 0;
+        t_cell *curr = liste_adj.list[i].head;
+        while (curr) {
+            float proba = curr->probabilite;
+            sum += proba;
+            curr = curr->next;
+        }
+        if (sum < 0.99 || sum > 1) {
+            printf("Ce n'est pas un graphe de Markov.\n");
+            printf("La somme des probabilites du sommet %d est %.2f\n", i + 1, sum);
+            return;
+        }
+    }
+    printf("Le graphe est un graphe de Markov.");
+}
