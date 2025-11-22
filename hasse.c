@@ -2,7 +2,7 @@
 #include "hasse.h"
 
 
-void removeTransitiveLinks(t_link_array *p_link_array)
+/*void removeTransitiveLinks(t_link_array *p_link_array)
 {
     int i = 0;
     while (i < p_link_array->log_size)
@@ -47,3 +47,4 @@ void removeTransitiveLinks(t_link_array *p_link_array)
         }
     }
 }
+*/

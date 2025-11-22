@@ -9,7 +9,5 @@ add_executable(TI_301_PJT
         main.c
         utils.c
         hasse.c
-        src/graph/graphe.c
-        src/liste/listes.c
 )
 
