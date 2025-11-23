@@ -26,33 +26,26 @@ typedef struct ListeAdj {
 typedef struct t_tarjan_vertex {
     int id;
     int num;
-    int m_class;
+    int low;
     int test;
 }t_tarjan_vertex;
 
-//Tableau de type tarjan
-typedef struct t_vertex {
-    t_tarjan_vertex tarjan_vertex;
-}t_vertex;
-
 //Classe
-typedef struct t_classe{
+typedef struct t_classe {
     char *nom;
+    int *sommets;
     int nb_vertex;
-}t_classe;
+    int taille;
+} t_classe;
 
 //Partition
 typedef struct t_part {
+    t_classe *classes;
     int nb_classe;
-}t_part;
+    int taille;
+} t_part;
 
 //Type pile
-/*typedef struct stack {
-    int *element;
-    int top;
-    int taille;
-}t_stack;
-*/
 typedef struct stack_cell {
     int sommet;
     struct stack_cell *next;
@@ -80,4 +73,12 @@ void DisplayAdjList(t_liste_adj list_adj, int taille);
 t_liste_adj readGraph(const char *filename);
 void WriteGraph(const char *filename, t_liste_adj liste_adj);
 void isMarkovGraph(t_liste_adj liste_adj);
+t_tarjan_vertex *InitTarjanVertices(t_liste_adj liste_adj);
+t_part InitPartition(int capacite_initiale);
+t_classe *AddClasseToPartition(t_part *partition, const char *nom);
+void AddSommetToClasse(t_classe *cl, int sommet);
+void Parcours(int u, t_liste_adj liste_adj, t_tarjan_vertex *tab_vertex,
+                t_stack *stack, t_part *partition, int *index);
+t_part Tarjan(t_liste_adj liste_adj);
+void DisplayPartition(t_part partition);
 #endif
