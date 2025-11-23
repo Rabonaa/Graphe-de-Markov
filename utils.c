@@ -180,3 +180,20 @@ void WriteGraph(const char *filename, t_liste_adj liste_adj) {
     fclose(file);
 }
 
+//Sous-Fonction pour Algo de Tarjan
+t_vertex *Tarjan_func(t_liste_adj liste_adj) {
+    t_vertex *tab_vertex = malloc(liste_adj.taille * sizeof(tab_vertex));
+    if (tab_vertex == NULL) {
+        printf( "Erreur d'allocation memoire\n");
+        exit(EXIT_FAILURE);
+    }
+    for (int i = 0; i < liste_adj.taille; i++) {
+        t_tarjan_vertex tarjan_vertex = {i + 1, -1, -1, 0};
+        tab_vertex[i].tarjan_vertex = tarjan_vertex;
+    }
+    return tab_vertex;
+}
+
+//Pile
+
+
