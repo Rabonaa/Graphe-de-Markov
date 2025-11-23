@@ -29,11 +29,20 @@ typedef struct partition {
 
 tab_tarjan graph_tab(t_liste_adj liste_adj);
 
-typedef struct stack {
-    int* values ;
-    int nbElts;
+typedef struct stack_cell {
+    int sommet;
+    struct stack_cell *next;
+}t_scell;
+
+typedef struct t_stack_list {
+    t_scell *head;
+}t_slist;
+
+typedef struct t_stack {
+    t_slist s_list;
 }t_stack;
 
+bool isEmptyStack(t_stack *stack);
 void push(t_stack*,int);
 int pop(t_stack*);
 

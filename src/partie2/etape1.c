@@ -24,18 +24,33 @@ tab_tarjan graph_tab(t_liste_adj liste_adj) {
     return tab;
 }
 
-void push(t_stack* pile,int num) {
-    pile->nbElts+=1;
-    pile->values[pile->nbElts-1]=num;
+bool isEmptyStack(t_stack *stack) {
+    if (!stack->s_list.head) {
+        return 1;
+    }
+    return 0;
 }
 
-int pop(t_stack* pile) {
-    if (pile->nbElts==0) {
-        printf("erreur dans la pile");
+void push(t_stack *stack, int val) {
+    t_scell *new_cell = malloc(sizeof(t_scell));
+    if (!new_cell) {
+        printf("Erreur d'allocation memoire\n");
         exit(EXIT_FAILURE);
     }
-    pile->nbElts-=1;
-    return pile->values[pile->nbElts];
+    new_cell->sommet = val;
+    new_cell->next = stack->s_list.head;
+    stack->s_list.head = new_cell;
+}
+
+int pop(t_stack *stack) {
+    if (isEmptyStack(stack)) {
+        return -1;
+    }
+    t_scell *head = stack->s_list.head;
+    int sommet = head->sommet;
+    stack->s_list.head = head->next;
+    free(head);
+    return sommet;
 }
 
 int min(int i1,int i2) {
@@ -91,8 +106,6 @@ t_partition* tarjan(t_liste_adj graph) {
         return partition;
     }
     t_stack* pile=malloc(sizeof(t_stack));
-    pile->nbElts=0;
-    pile->values=malloc(graph.taille*sizeof(int));
     t_partition* partition= malloc(sizeof(t_partition));
     partition->liste=malloc(graph.taille*sizeof(t_classe*));
     partition->nb_classes=0;
@@ -103,11 +116,7 @@ t_partition* tarjan(t_liste_adj graph) {
             parcours(i,&num,pile,graph,tab,partition);
         }
     }
-    free(pile->values);
     free(pile);
-    for (int i = 0; i < graph.taille; ++i)
-        free(tab[i]);
-    free(tab);
     return partition;
 }
 
