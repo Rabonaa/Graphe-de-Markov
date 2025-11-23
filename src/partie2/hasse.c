@@ -37,7 +37,7 @@ t_link_array creer_hasse(t_liste_adj* graphe, t_part partition) {
         }
     }
     free(itoC);
-    //removeTransitiveLinks(&hasse);
+    removeTransitiveLinks(&hasse);
     return hasse;
 }
 
@@ -66,5 +66,51 @@ void afficherHasse(t_link_array* liens) {
     if (liens->log_size == 0) printf("Aucun lien.\n");
     for (int i = 0; i < liens->log_size; i++) {
         printf("C%d -> C%d\n", liens->links[i].from + 1, liens->links[i].to + 1);
+    }
+}
+
+void PrintGraphProperties(t_part partition, t_link_array links) {
+    printf("\nCARACTERISTIQUES DU GRAPHE\n");
+
+    if (partition.nb_classe == 1) {
+        printf("-> Le graphe est irreductible.\n");
+    } else {
+        printf("-> Le graphe n'est pas irreductible (%d classes).\n", partition.nb_classe);
+    }
+
+    for (int i = 0; i < partition.nb_classe; i++) {
+        t_classe cl = partition.classes[i];
+        int is_transitive = 0;
+
+        for (int k = 0; k < links.log_size; k++) {
+            if (links.links[k].from == i) {
+                is_transitive = 1;
+                break;
+            }
+        }
+
+        printf(" La classe C%d {", i + 1);
+        for (int j = 0; j < cl.nb_vertex; j++) {
+            printf("%d", cl.sommets[j]);
+            if (j < cl.nb_vertex - 1) printf(",");
+        }
+        printf("} est ");
+
+        if (is_transitive) {
+            printf("transitoire\n");
+            printf("   -> Les etats { ");
+            for (int j = 0; j < cl.nb_vertex; j++) printf("%d ", cl.sommets[j]);
+            printf("} sont transitoires.\n");
+        } else {
+            printf("persistante\n");
+            printf("   -> Les etats { ");
+            for (int j = 0; j < cl.nb_vertex; j++) printf("%d ", cl.sommets[j]);
+            printf("} sont persistants.\n");
+
+            if (cl.nb_vertex == 1) {
+                printf("   -> L'etat %d est absorbant.\n", cl.sommets[0]);
+            }
+        }
+        printf("\n");
     }
 }

@@ -13,5 +13,6 @@ int main() {
     DisplayPartition(partition);
     t_link_array liens=creer_hasse(&liste_adj,partition);
     afficherHasse(&liens);
+    PrintGraphProperties(partition, liens);
     return 0;
 }

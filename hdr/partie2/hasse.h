@@ -14,10 +14,10 @@ typedef struct {
 }t_link_array;
 
 t_link_array creer_hasse(t_liste_adj* graphe, t_part partition);
-
 void removeTransitiveLinks(t_link_array *p_link_array);
+void afficherHasse(t_link_array* liens);
+void PrintGraphProperties(t_part partition, t_link_array links);
 
-void afficherHasse(t_link_array*);
 
 /*
  * @brief Creates a link array from the given partition and graph.
