@@ -1,5 +1,6 @@
 #ifndef __UTILS_H__
 #define __UTILS_H__
+#include <stdbool.h>
 
 
 //cellule qui représente une arête
@@ -46,15 +47,29 @@ typedef struct t_part {
 }t_part;
 
 //Type pile
-typedef struct stack_cell{
+/*typedef struct stack {
+    int *element;
+    int top;
+    int taille;
+}t_stack;
+*/
+typedef struct stack_cell {
     int sommet;
     struct stack_cell *next;
+}t_scell;
+
+typedef struct t_stack_list {
+    t_scell *head;
+}t_slist;
+
+typedef struct t_stack {
+    t_slist s_list;
 }t_stack;
 
-typedef struct stack_list {
-    t_stack *head;
-}t_stack_list;
-
+//Fonction Pile
+void push(t_stack *stack, int val);
+int pop(t_stack *stack);
+bool isEmptyStack(t_stack *stack);
 
 t_cell* CreateCell(int sommet_arrivee, float proba);
 void AddCell( t_list *list, int sommet_arrivee, float proba);

@@ -194,6 +194,34 @@ t_vertex *Tarjan_func(t_liste_adj liste_adj) {
     return tab_vertex;
 }
 
-//Pile
+//Fonction Pile
+bool isEmptyStack(t_stack *stack) {
+    if (!stack->s_list.head) {
+        return 1;
+    }
+    return 0;
+}
+
+void push(t_stack *stack, int val) {
+    t_scell *new_cell = malloc(sizeof(t_scell));
+    if (!new_cell) {
+        printf("Erreur d'allocation memoire\n");
+        exit(EXIT_FAILURE);
+    }
+    new_cell->sommet = val;
+    new_cell->next = stack->s_list.head;
+    stack->s_list.head = new_cell;
+}
+
+int pop(t_stack *stack) {
+    if (isEmptyStack(stack)) {
+        return -1;
+    }
+    t_scell *head = stack->s_list.head;
+    int sommet = head->sommet;
+    stack->s_list.head = head->next;
+    free(head);
+    return sommet;
+}
 
 
