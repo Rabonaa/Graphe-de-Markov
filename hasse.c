@@ -50,86 +50,108 @@ void removeTransitiveLinks(t_link_array *p_link_array)
     }
 }
 
+// Initialisation du tableau de liens
 t_link_array InitLinkArray(int capacite_initiale) {
-    t_link_array arr;
-    arr.links = malloc(capacite_initiale * sizeof(t_link));
-    if (!arr.links) {
-        printf("Erreur allocation link array\n");
+    t_link_array array;
+    array.log_size = 0;
+    array.taille = capacite_initiale;
+    array.links = malloc(capacite_initiale * sizeof(t_link));
+    if (!array.links) {
+        printf("Erreur d'allocation pour les liens\n");
         exit(EXIT_FAILURE);
     }
-    arr.log_size = 0;
-    arr.capacite = capacite_initiale;
-    return arr;
+    return array;
 }
 
-//Ajout lien
-void AddLink(t_link_array *arr, int from, int to) {
-    for (int i = 0; i < arr->log_size; i++) {
-        if (arr->links[i].from == from && arr->links[i].to == to)
-            return;
-    }
-    if (arr->log_size >= arr->capacite) {
-        arr->capacite *= 2;
-        arr->links = realloc(arr->links, arr->capacite * sizeof(t_link));
-        if (!arr->links) {
-            printf("Erreur realloc link array\n");
+// Ajout d'un lien dans le tableau
+void AddLink(t_link_array *array, int from, int to) {
+    if (array->log_size >= array->taille) {
+        array->taille *= 2;
+        array->links = realloc(array->links, array->taille * sizeof(t_link));
+        if (!array->links) {
+            printf("Erreur de realloc liens\n");
             exit(EXIT_FAILURE);
         }
     }
-    arr->links[arr->log_size].from = from;
-    arr->links[arr->log_size].to = to;
-    arr->log_size++;
+    array->links[array->log_size].from = from;
+    array->links[array->log_size].to = to;
+    array->log_size++;
 }
 
-//Tableau sommet->classe
-int *CreateVertexClassMap(t_part partition, int nb_sommets) {
-    int *map = malloc(nb_sommets * sizeof(int));
-    if (!map) {
-        printf("Erreur d'allocation vertex\n");
-        exit(EXIT_FAILURE);
-    }
-
-    for (int i = 0; i < nb_sommets; i++)
-        map[i] = -1;
-
-    for (int ci = 0; ci < partition.nb_classe; ci++) {
-        t_classe cl = partition.classes[ci];
-        for (int vi = 0; vi < cl.nb_vertex; vi++) {
-            int sommet = cl.sommets[vi];
-            map[sommet-1] = ci;
+// Vérifie si un lien existe déjà pour éviter les doublons immédiats
+int HasLink(t_link_array *array, int from, int to) {
+    for (int i = 0; i < array->log_size; i++) {
+        if (array->links[i].from == from && array->links[i].to == to) {
+            return 1;
         }
     }
-    return map;
+    return 0;
 }
 
-//Liens classes
-t_link_array BuildHasseLinks(t_liste_adj liste_adj, t_part partition) {
-    int *vertex_class = CreateVertexClassMap(partition, liste_adj.taille);
-    t_link_array links = InitLinkArray(4);
+//index sommet -> index classe
+int *GetVertexToClassMapping(t_part partition, int nb_sommets) {
+    int *mapping = malloc(nb_sommets * sizeof(int));
+    if (!mapping) exit(EXIT_FAILURE);
 
-    for (int u = 0; u < liste_adj.taille; u++) {
-        int cu = vertex_class[u];
-        t_cell *curr = liste_adj.list[u].head;
+    for (int i = 0; i < partition.nb_classe; i++) {
+        t_classe cl = partition.classes[i];
+        for (int j = 0; j < cl.nb_vertex; j++) {
+            if (cl.sommets[j] - 1 < nb_sommets) {
+                mapping[cl.sommets[j] - 1] = i;
+            }
+        }
+    }
+    return mapping;
+}
+
+t_link_array FindInterClassLinks(t_liste_adj liste_adj, t_part partition) {
+    int *vertex_to_class = GetVertexToClassMapping(partition, liste_adj.taille);
+    t_link_array links = InitLinkArray(10);
+    for (int i = 0; i < liste_adj.taille; i++) {
+        int Ci = vertex_to_class[i];
+        t_cell *curr = liste_adj.list[i].head;
         while (curr) {
-            int v = curr->sommet_arrivee - 1;
-            int cv = vertex_class[v];
-            if (cu != cv) {
-                AddLink(&links, cu, cv);
+            int j = curr->sommet_arrivee - 1;
+            int Cj = vertex_to_class[j];
+            if (Ci != Cj) {
+                if (!HasLink(&links, Ci, Cj)) {
+                    AddLink(&links, Ci, Cj);
+                }
             }
             curr = curr->next;
         }
     }
+    free(vertex_to_class);
 
-    free(vertex_class);
     return links;
 }
 
-//Affichage Hasse
-void DisplayHasse(t_link_array links, t_part partition) {
-    printf("flowchart LR\n");
-    for (int i = 0; i < links.log_size; i++) {
-        int dep = links.links[i].from;
-        int arr = links.links[i].to;
-        printf("%s --> %s\n", partition.classes[dep].nom, partition.classes[arr].nom);
+//Diagramme
+void WriteHasseDiagram(const char *filename, t_part partition, t_link_array links) {
+    FILE *file = fopen(filename, "w");
+    if (!file) {
+        perror("Erreur ouverture fichier Hasse");
+        return;
     }
+    fprintf(file,"---\nconfig:\n");
+    fprintf(file, "  layout: elk\n");
+    fprintf(file, "  theme: neo\n");
+    fprintf(file, "  look: neo\n---\n");
+    fprintf(file, "\nflowchart LR\n");
+    for (int i = 0; i < partition.nb_classe; i++) {
+        t_classe cl = partition.classes[i];
+        fprintf(file, "C%d[\"{", i + 1);
+        for(int j = 0; j < cl.nb_vertex; j++) {
+            fprintf(file, "%d", cl.sommets[j]);
+            if(j < cl.nb_vertex - 1) fprintf(file, ",");
+        }
+        fprintf(file, "}\"]\n");
+    }
+    fprintf(file, "\n");
+
+    for (int i = 0; i < links.log_size; i++) {
+        fprintf(file, "C%d --> C%d\n", links.links[i].from + 1, links.links[i].to + 1);
+    }
+
+    fclose(file);
 }

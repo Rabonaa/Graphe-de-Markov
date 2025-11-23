@@ -11,20 +11,26 @@ int main() {
     t_part partition = Tarjan(liste_adj);
     DisplayPartition(partition);
 
-    t_link_array links = BuildHasseLinks(liste_adj, partition);
-    printf("\nLiens Hasse avant suppression des transitive links :\n");
-    DisplayHasse(links, partition);
+    t_link_array liens = FindInterClassLinks(liste_adj, partition);
 
-    removeTransitiveLinks(&links);
-    printf("\nLiens Hasse apres suppression des transitive links :\n");
-    DisplayHasse(links, partition);
+    printf("\nLiens inter-classes trouves %d :\n", liens.log_size);
+    for (int i = 0; i < liens.log_size; i++) {
 
-    free(links.links);
-    for (int i = 0; i < partition.nb_classe; i++) {
-        free(partition.classes[i].sommets);
-        free(partition.classes[i].nom);
+        printf("  C%d -> C%d\n", liens.links[i].from + 1, liens.links[i].to + 1);
     }
-    free(partition.classes);
-    free(liste_adj.list);
+
+    WriteHasseDiagram("hasse_complet.txt", partition, liens);
+    printf("\nSuppression des redondances\n");
+    removeTransitiveLinks(&liens);
+
+    printf("Liens restants apres reduction %d :\n", liens.log_size);
+    for (int i = 0; i < liens.log_size; i++) {
+        printf("  C%d -> C%d\n", liens.links[i].from + 1, liens.links[i].to + 1);
+    }
+
+
+    WriteHasseDiagram("hasse_reduit.txt", partition, liens);
+
+    free(liens.links);
     return 0;
 }
