@@ -11,4 +11,6 @@ add_executable(TI_301_PJT
         src/partie1/cglm.c
         src/partie2/etape1.c
         src/partie2/hasse.c
+        src/partie3/matrix.c
+        hdr/partie3/matrix.h
 )
