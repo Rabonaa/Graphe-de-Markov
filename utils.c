@@ -142,12 +142,12 @@ void isMarkovGraph(t_liste_adj liste_adj) {
             curr = curr->next;
         }
         if (sum < 0.99 || sum > 1) {
-            printf("Ce n'est pas un graphe de Markov.\n");
+            printf("\nCe n'est pas un graphe de Markov.\n");
             printf("La somme des probabilites du sommet %d est %.2f\n", i + 1, sum);
             return;
         }
     }
-    printf("Le graphe est un graphe de Markov.\n");
+    printf("\nLe graphe est un graphe de Markov.\n\n");
 }
 
 //Graphe en txt

@@ -155,3 +155,50 @@ void WriteHasseDiagram(const char *filename, t_part partition, t_link_array link
 
     fclose(file);
 }
+
+//Propriétés graphe
+void PrintGraphProperties(t_part partition, t_link_array links) {
+    printf("\nCARACTERISTIQUES DU GRAPHE\n");
+
+    if (partition.nb_classe == 1) {
+        printf("-> Le graphe est irreductible.\n");
+    } else {
+        printf("-> Le graphe n'est pas irreductible (%d classes).\n", partition.nb_classe);
+    }
+
+    for (int i = 0; i < partition.nb_classe; i++) {
+        t_classe cl = partition.classes[i];
+        int is_transitive = 0;
+
+        for (int k = 0; k < links.log_size; k++) {
+            if (links.links[k].from == i) {
+                is_transitive = 1;
+                break;
+            }
+        }
+
+        printf(" La classe C%d {", i + 1);
+        for (int j = 0; j < cl.nb_vertex; j++) {
+            printf("%d", cl.sommets[j]);
+            if (j < cl.nb_vertex - 1) printf(",");
+        }
+        printf("} est ");
+
+        if (is_transitive) {
+            printf("transitoire\n");
+            printf("   -> Les etats { ");
+            for (int j = 0; j < cl.nb_vertex; j++) printf("%d ", cl.sommets[j]);
+            printf("} sont transitoires.\n");
+        } else {
+            printf("persistante\n");
+            printf("   -> Les etats { ");
+            for (int j = 0; j < cl.nb_vertex; j++) printf("%d ", cl.sommets[j]);
+            printf("} sont persistants.\n");
+
+            if (cl.nb_vertex == 1) {
+                printf("   -> L'etat %d est absorbant.\n", cl.sommets[0]);
+            }
+        }
+        printf("\n");
+    }
+}

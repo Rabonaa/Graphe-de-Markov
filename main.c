@@ -30,6 +30,7 @@ int main() {
 
 
     WriteHasseDiagram("hasse_reduit.txt", partition, liens);
+    PrintGraphProperties(partition, liens);
 
     free(liens.links);
     return 0;
