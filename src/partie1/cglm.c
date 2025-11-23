@@ -152,5 +152,5 @@ void isMarkovGraph(t_liste_adj liste_adj) {
             return;
         }
     }
-    printf("Le graphe est un graphe de Markov.");
+    printf("Le graphe est un graphe de Markov.\n");
 }
